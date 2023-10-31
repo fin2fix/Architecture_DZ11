@@ -1,0 +1,290 @@
+openapi: 3.0.0
+info:
+  title: Робот-пылесос
+  version: 1.1.0
+servers:
+  - url: http://localhost:8080/api/v1/
+    description: "Dev server"
+paths:
+  /robots:
+    get:
+      summary: Получение списка роботов
+      tags:
+        - Robots
+      operationId: getAllRobots
+      responses: 
+        "200":
+          description: Успешный ответ на запрос
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Robots"
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Регистрация нового робота 
+      tags:
+        - Robots
+      operationId: registerNewRobot
+      requestBody:
+        content:
+          aplication/json:
+            schema:
+              $ref: "#/components/schemas/Robot"
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Robots"
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+  /robot/{robotId}:
+    delete:
+      summary: Отмена задания роботу по ID
+      tags:
+        - Robots
+      operationId: cancelTaskRobotByID
+      parameters:
+        - name: robotId
+          in: path
+          required: true
+          description: Id робота
+          schema:
+            type: string
+          example: "f1234j5678"
+      responses:
+        "200":
+          description: Отмена прошла успешно
+          content:
+            aplication/json: {}
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Robots
+      summary: Обновление/редактирование задания на уборку
+      description: Обновление существующего задания по ID
+      operationId: updateRobotTask
+      parameters:
+        - name: robotId
+          in: path
+          required: true
+          description: Id робота
+          schema:
+            type: string
+          example: "f1234j5678"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Robot"
+        required: true
+      responses:
+        '200':
+          description: Успешный ответ на запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Robots"          
+        '400':
+          description: Введен неверный ID робота
+        '404':
+          description: Робот не найден
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users:
+    get:
+      summary: Получение списка пользователей
+      tags:
+        - Users
+      operationId: getAllUsers
+      responses: 
+        "200":
+          description: Успешный ответ на запрос
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Регистрация нового пользователя 
+      tags:
+        - Users
+      operationId: registerNewUser
+      requestBody:
+        content:
+          aplication/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+  /user/{userId}:
+    delete:
+      summary: Удаление пользователя по ID
+      tags:
+        - Users
+      operationId: deletUserByID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Id пользователя
+          schema:
+            type: integer
+            example: 123
+      responses:
+        "200":
+          description: Отмена прошла успешно
+          content:
+            aplication/json: {}
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Users
+      summary: Редактирование данных пользователя
+      description: Редактирование данных пользователя по ID
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Id пользователя
+          schema:
+            type: integer
+            example: 123
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        '200':
+          description: Успешный ответ на запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"          
+        '400':
+          description: Введен неверный ID пользователя
+        '404':
+          description: Пользователь не найден
+        "default":
+          description: Всё остальное
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"      
+components:
+  schemas:
+    Robot:
+      type: object
+      required:
+        - id
+        - model
+        - version
+        - status
+        - fabric_number
+        - resource
+        - ip_address
+        - id_group
+      properties:
+        id:
+          type: integer
+          example: 123
+        model:
+          type: string
+          example: "AAA"
+        version:
+          type: string
+          example: "236-085.15"
+        status:
+          type: string
+          example: "worked"
+        fabric_number:
+          type: integer
+          example: 62510036
+        resource:
+          type: integer
+          example: 75
+        ip_address:
+          type: string
+          example: "192.168.2.1"
+        id_group:
+          type: integer
+          example: 1  
+    User:
+      type: object
+      required:
+        - id
+        - login
+        - hash_password
+      properties:
+        id:
+          type: integer
+          example: 123
+        login:
+          type: string
+          example: "User1"
+        hash_password:
+          type: string
+          example: "a1582hy25q"
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+    Robots:
+      type: array
+      items:
+        $ref: "#/components/schemas/Robot"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
